@@ -1,5 +1,5 @@
 "use client";
-
+import { ReactNode } from "react";
 import React, { useState, useEffect, useRef } from 'react';
 import * as THREE from "three";
 import { 
@@ -44,7 +44,9 @@ const ThreeBackground = ({ isDarkMode }: { isDarkMode: boolean }) => {
       
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(window.devicePixelRatio);
-      mountRef.current.appendChild(renderer.domElement);
+      if (mountRef.current) {
+        mountRef.current.appendChild(renderer.domElement);
+      }
 
       // Create abstract floating Torus Knots
       const knotGeom = new THREE.TorusKnotGeometry(1, 0.3, 100, 16);
@@ -163,18 +165,48 @@ const segments = [
 
 // --- Specialized Components ---
 
-const BentoCard = ({ children, className = "", gradient = "", isDarkMode, forceGradient = false }) => (
-  <div className={`group relative overflow-hidden rounded-[2.5rem] transition-all duration-700 shadow-2xl ${className} 
-    ${isDarkMode 
-      ? 'bg-white/[0.03] backdrop-blur-xl border-white/10' 
-      : (forceGradient ? 'border-transparent' : 'bg-white/80 backdrop-blur-md border-slate-200')
-    } border hover:border-blue-500/50`}>
-    <div className={`absolute inset-0 bg-gradient-to-br ${gradient} ${forceGradient ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity duration-700`}></div>
+type BentoCardProps = {
+  children: ReactNode;
+  className?: string;
+  gradient?: string;
+  isDarkMode: boolean;
+  forceGradient?: boolean;
+};
+
+const BentoCard = ({
+  children,
+  className = "",
+  gradient = "",
+  isDarkMode,
+  forceGradient = false,
+}: BentoCardProps) => (
+  <div
+    className={`group relative overflow-hidden rounded-[2.5rem] transition-all duration-700 shadow-2xl ${className}
+    ${
+      isDarkMode
+        ? "bg-white/[0.03] backdrop-blur-xl border-white/10"
+        : forceGradient
+        ? "border-transparent"
+        : "bg-white/80 backdrop-blur-md border-slate-200"
+    } border hover:border-blue-500/50`}
+  >
+    <div
+      className={`absolute inset-0 bg-gradient-to-br ${gradient} ${
+        forceGradient ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+      } transition-opacity duration-700`}
+    ></div>
+
     <div className="relative z-10">{children}</div>
   </div>
 );
 
-const Navbar = ({ isDarkMode, setIsDarkMode }) => {
+const Navbar = ({
+  isDarkMode,
+  setIsDarkMode,
+}: {
+  isDarkMode: boolean;
+  setIsDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -249,7 +281,7 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
   );
 };
 
-const Hero = ({ isDarkMode }) => (
+const Hero = ({ isDarkMode }: { isDarkMode: boolean }) => (
   <section id="home" className="relative min-h-screen flex items-center pt-32 lg:pt-20">
     <div className="max-w-7xl mx-auto px-6 lg:px-12 grid lg:grid-cols-2 gap-20 items-center relative z-10">
       <div className="space-y-10">
@@ -308,7 +340,7 @@ const Hero = ({ isDarkMode }) => (
   </section>
 );
 
-const StatsSection = ({ isDarkMode }) => (
+const StatsSection = ({ isDarkMode }: { isDarkMode: boolean }) => (
   <section id="stats" className="py-40 relative">
     <div className="max-w-7xl mx-auto px-6">
       <div className="grid lg:grid-cols-3 gap-10">
@@ -327,7 +359,7 @@ const StatsSection = ({ isDarkMode }) => (
   </section>
 );
 
-const EdgeSection = ({ isDarkMode }) => (
+const EdgeSection = ({ isDarkMode }: { isDarkMode: boolean }) => (
   <section id="edge" className={`py-40 rounded-[4rem] mx-4 lg:mx-12 border overflow-hidden transition-colors duration-700
     ${isDarkMode ? 'bg-white/5 border-white/5' : 'bg-white border-slate-100 shadow-sm'}`}>
     <div className="max-w-7xl mx-auto px-6">
@@ -366,7 +398,7 @@ const EdgeSection = ({ isDarkMode }) => (
   </section>
 );
 
-const CATSection = ({ isDarkMode }) => (
+const CATSection = ({ isDarkMode }: { isDarkMode: boolean }) => (
   <section id="cat" className="py-40">
     <div className="max-w-7xl mx-auto px-6">
       <div className="flex flex-col lg:flex-row items-center gap-20">
@@ -391,7 +423,7 @@ const CATSection = ({ isDarkMode }) => (
   </section>
 );
 
-const ProcessSection = ({ isDarkMode }) => (
+const ProcessSection = ({ isDarkMode }: { isDarkMode: boolean }) => (
   <section id="process" className={`py-40 rounded-[4rem] mx-4 lg:mx-12 relative overflow-hidden transition-colors duration-700
     ${isDarkMode ? 'bg-black/40 border border-white/5' : 'bg-slate-100 border border-slate-200 shadow-sm'}`}>
      <div className="absolute -left-32 top-0 w-96 h-96 bg-blue-600/10 blur-[150px]"></div>
@@ -426,7 +458,7 @@ const ProcessSection = ({ isDarkMode }) => (
   </section>
 );
 
-const FAQSection = ({ isDarkMode }) => {
+const FAQSection = ({ isDarkMode }: { isDarkMode: boolean }) => {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
   const faqs = [
     { category: "Curriculum", q: "What domains do you cover?", a: "We provide end-to-end expertise in Gen-AI, Product Management, Fintech, and Digital Operations Hubs." },
@@ -468,7 +500,7 @@ const FAQSection = ({ isDarkMode }) => {
   );
 };
 
-const Testimonials = ({ isDarkMode }) => (
+const Testimonials = ({ isDarkMode }: { isDarkMode: boolean }) => (
   <section id="clients" className="py-40">
     <div className="max-w-7xl mx-auto px-6">
       <div className="text-center mb-32">
@@ -502,7 +534,7 @@ const Testimonials = ({ isDarkMode }) => (
   </section>
 );
 
-const Footer = ({ isDarkMode }) => (
+const Footer = ({ isDarkMode }: { isDarkMode: boolean }) => (
   <footer className={`pt-40 pb-20 relative border-t transition-colors duration-700
     ${isDarkMode ? 'bg-slate-950 border-white/5' : 'bg-slate-50 border-slate-200'}`}>
     <div className="max-w-7xl mx-auto px-6 lg:px-12">
